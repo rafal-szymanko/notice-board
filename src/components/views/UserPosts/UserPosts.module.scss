@@ -3,9 +3,18 @@
 .root {
     display: flex;
     flex-direction: column;
+    .titleContainer {
+        align-items: center;
+    };
+    .postsContainer {
+        flex-wrap: wrap;
+    };
 
+    .titleContainer, .postsContainer {
+        display: flex;
+        justify-content: space-between;
+    };
     .paper {
-        height: 60vh;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -13,9 +22,8 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            width: 60%;
+            // width: 60%;
             height: 90%;
         }
     }
-
 }

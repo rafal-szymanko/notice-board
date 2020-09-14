@@ -1,4 +1,32 @@
 @import '../../../styles/settings.scss';
 
-// .root {
-// }
+.root {
+    display: flex;
+    .description {
+        width: 60vw;
+        .card {
+            width: 100%;
+            margin-top: 50px;
+            .cardMedia {
+                height: 40vh;
+            }
+        }
+    };
+    .contactContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .contact {
+            width: 30vw;
+            height: 25vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    .contact, .description {
+        margin: 20px
+    }
+}

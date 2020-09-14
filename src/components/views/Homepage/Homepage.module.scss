@@ -1,4 +1,17 @@
 @import '../../../styles/settings.scss';
 
-// .root {
-// }
+.root {
+    display: flex;
+    flex-direction: column;
+    .titleContainer {
+        align-items: center;
+    }
+    .postsContainer {
+        flex-wrap: wrap;
+    }
+
+    .titleContainer, .postsContainer {
+        display: flex;
+        justify-content: space-between;
+    }
+}

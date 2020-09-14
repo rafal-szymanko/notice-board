@@ -4,7 +4,7 @@ import { PostComponent } from './Post';
 
 describe('Component Post', () => {
   it('should render without crashing', () => {
-    const component = shallow(<PostComponent />);
+    const component = shallow(<PostComponent postById={[]}/>);
     expect(component).toBeTruthy();
   });
 });

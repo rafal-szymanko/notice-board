@@ -1,4 +1,35 @@
 @import '../../../styles/settings.scss';
 
-// .root {
-// }
+@import '../../../styles/settings.scss';
+
+.root {
+    display: flex;
+    .description {
+        width: 60vw;
+        .card {
+            width: 100%;
+            margin-top: 50px;
+            .cardMedia {
+                height: 40vh;
+            }
+        }
+    };
+
+    .form {
+        width: 30vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .formContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 60%;
+            height: 95%;
+        };
+    };
+    .description, .form {
+        margin: 20px;
+    }
+};
+

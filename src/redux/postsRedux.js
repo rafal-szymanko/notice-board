@@ -1,5 +1,13 @@
 /* selectors */
 export const getAll = ({posts}) => posts.data;
+export const getPostByID = ({posts}, postId) => {
+  const [filtered] = posts.data.filter(post => postId === post.id);
+  return filtered;
+};
+export const getPostByAuthor = ({posts}, id) => posts.data.filter(post => id === post.userId);
+
+export const getUserStatus = ({userId}) => userId;
+
 
 /* action name creator */
 const reducerName = 'posts';

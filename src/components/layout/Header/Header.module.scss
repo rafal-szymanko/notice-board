@@ -1,4 +1,22 @@
 @import '../../../styles/settings.scss';
 
-// .root {
-// }
+.root {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 50px;
+
+    .logoContainer {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: $color-light;
+        h2 {
+            padding-left: 20px;
+        };
+    };
+
+    .buttonsContainer {
+        display: flex;
+        align-items: center;
+    }
+}

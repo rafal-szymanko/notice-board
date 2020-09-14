@@ -1,10 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { HomepageComponent } from './Homepage';
+import { UserPostsComponent } from './UserPosts';
 
-describe('Component Homepage', () => {
+describe('Component UserPosts', () => {
   it('should render without crashing', () => {
-    const component = shallow(<HomepageComponent posts={[]} />);
+    const component = shallow(<UserPostsComponent />);
     expect(component).toBeTruthy();
   });
 });
