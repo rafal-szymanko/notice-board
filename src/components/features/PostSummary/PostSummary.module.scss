@@ -3,10 +3,10 @@
 .root {
     
     .card {
-        max-width: 400px;
+        width: 100%;
         margin-bottom: 50px;
         .cardMedia {
-            height: 140px;
+            max-height: 140px;
         }
     }
 }

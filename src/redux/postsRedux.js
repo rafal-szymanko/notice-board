@@ -1,9 +1,10 @@
+import axios from 'axios';
+import {initialState} from './initialState';
 /* selectors */
-export const getAll = ({posts}) => posts.data;
-export const getPostByID = ({posts}, postId) => {
-  const [filtered] = posts.data.filter(post => postId === post.id);
-  return filtered;
-};
+export const getAllPublished = ({posts}) => posts.data.filter(item => item.status === 'published');
+export const getPostByID = ({posts}, postId) => posts.data.filter(post => postId === post._id);
+
+
 export const getPostByAuthor = ({posts}, id) => posts.data.filter(post => id === post.userId);
 
 export const getUserStatus = ({userId}) => userId;
@@ -24,6 +25,23 @@ export const fetchSuccess = payload => ({ payload, type: FETCH_SUCCESS });
 export const fetchError = payload => ({ payload, type: FETCH_ERROR });
 
 /* thunk creators */
+export const fetchPublished = () => {
+  
+  return (dispatch, getState) => {
+    dispatch(fetchStarted());
+
+    if(initialState.posts.data.length === 0 && initialState.posts.loading.active === false) {
+      axios
+        .get('http://localhost:8000/api/posts')
+        .then(res => {
+          dispatch(fetchSuccess(res.data));
+        })
+        .catch(err => {
+          dispatch(fetchError(err.message || true));
+        });
+    }
+  };
+};
 
 /* reducer */
 export const reducer = (statePart = [], action = {}) => {

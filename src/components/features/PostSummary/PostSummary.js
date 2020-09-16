@@ -17,17 +17,17 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
 
-const Component = ({className, children, title, image, id, price}) => {
+const Component = ({className, title, author, _id, price, photo}) => {
 
   return (
     <div className={clsx(className, styles.root)}>
-      <Link to={`/post/${id}`}>
+      <Link to={`/post/${_id}`}>
         <Card key={title} className={styles.card}>
           <CardActionArea>
             <CardMedia
               className={styles.cardMedia}
               // image={img(`./${image}`)}
-              image={'img'}
+              image={photo}
               title={title}
             />
             <CardContent>
@@ -35,7 +35,10 @@ const Component = ({className, children, title, image, id, price}) => {
                 {title}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
-                Price: {price} €
+                Author: {author} 
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Price: {price ? price : 'to be agreed'} 
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -49,22 +52,16 @@ Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   title: PropTypes.string,
-  description: PropTypes.string,
+  author: PropTypes.string,
   image: PropTypes.string,
-  id: PropTypes.number,
-  price: PropTypes.number,
+  _id: PropTypes.string,
+  photo: PropTypes.string,
+  price: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.instanceOf(null),
+  ]),
 
 };
-
-// const mapStateToProps = state => ({
-//   someProp: reduxSelector(state),
-// });
-
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
-
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   Component as PostSummary,

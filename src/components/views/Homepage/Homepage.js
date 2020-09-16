@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import { getAll, getUserStatus } from '../../../redux/postsRedux.js';
+import { getAllPublished, getUserStatus, fetchPublished } from '../../../redux/postsRedux.js';
 
 import {Link} from 'react-router-dom';
 
@@ -15,7 +15,10 @@ import styles from './Homepage.module.scss';
 import Button from '@material-ui/core/Button';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 
-const Component = ({className, userId, posts}) => {
+const Component = ({className, userId, posts, fetchPublishedPosts}) => {
+
+
+  useEffect(() => {(fetchPublishedPosts());}, []);
 
   const renderIfLogged = (userId) => {
     if(userId) {
@@ -40,7 +43,7 @@ const Component = ({className, userId, posts}) => {
         {renderIfLogged(userId)}
       </div>
       <div className={styles.postsContainer}>
-        {posts.map(post => <PostSummary key={post.id} {...post}/>)}
+        {posts.map(post => <PostSummary key={post._id} {...post}/>)}
       </div>
     </div>
   );
@@ -51,21 +54,19 @@ Component.propTypes = {
   className: PropTypes.string,
   posts: PropTypes.array,
   userId: PropTypes.number,
+  fetchPublishedPosts: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
-  posts: getAll(state),
+  posts: getAllPublished(state),
   userId: getUserStatus(state),
 });
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
+const mapDispatchToProps = dispatch => ({
+  fetchPublishedPosts: () => dispatch(fetchPublished()),
+});
 
-const Container = connect(mapStateToProps )(Component);
-
-
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   // Component as Homepage,

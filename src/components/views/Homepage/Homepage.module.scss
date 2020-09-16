@@ -7,7 +7,8 @@
         align-items: center;
     }
     .postsContainer {
-        flex-wrap: wrap;
+        display: flex;
+        flex-direction: column;
     }
 
     .titleContainer, .postsContainer {
