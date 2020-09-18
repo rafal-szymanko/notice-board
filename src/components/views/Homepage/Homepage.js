@@ -17,8 +17,9 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 
 const Component = ({className, userId, posts, fetchPublishedPosts}) => {
 
+  useEffect(() => {(fetchPublishedPosts());}, [fetchPublishedPosts]);
 
-  useEffect(() => {(fetchPublishedPosts());}, []);
+  console.log(posts);
 
   const renderIfLogged = (userId) => {
     if(userId) {

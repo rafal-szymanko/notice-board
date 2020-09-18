@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import {getPostByID, getUserStatus} from '../../../redux/postsRedux';
+import {getAllPublished, getUserStatus, fetchPublishedById} from '../../../redux/postsRedux';
 
 import styles from './Post.module.scss';
 
@@ -21,25 +21,27 @@ import EditIcon from '@material-ui/icons/Edit';
 
 
 
-const Component = ({className, postById, loggedUserId}) => {
+const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
 
-  const {description, price, mail, contact, title, image, phone, id, userId} = postById;
+  useEffect(() => {(fetchPublishedPostsById());}, [fetchPublishedPostsById]);
 
-  const renderIfAuthor = (postAuthorId, loggedUserId) => {
-    if(loggedUserId === postAuthorId) {
-      return (
-        <Link to={`/post/${id}/edit`}>
-          <Button
-            variant="contained"
-            color="default"
-            startIcon={<EditIcon />}
-          >
-            Edit your Ad
-          </Button>
-        </Link>
-      );
-    }
-  };
+  const {author, text} = getPublishedById;
+
+  // const renderIfAuthor = (postAuthorId, loggedUserId) => {
+  //   if(loggedUserId === postAuthorId) {
+  //     return (
+  //       <Link to={`/post/${_id}/edit`}>
+  //         <Button
+  //           variant="contained"
+  //           color="default"
+  //           startIcon={<EditIcon />}
+  //         >
+  //           Edit your Ad
+  //         </Button>
+  //       </Link>
+  //     );
+  //   }
+  // };
 
   return(
     <div className={clsx(className, styles.root)}>
@@ -49,17 +51,17 @@ const Component = ({className, postById, loggedUserId}) => {
             <CardMedia
               className={styles.cardMedia}
               image={'img'}
-              title={title}
+              title={'title'}
             />
             <CardContent>
               <Typography gutterBottom variant="h4" component="h2">
-                {title}
+                Title: 
               </Typography>
               <Typography variant="h5" component="h2">
-                Price: {price} €
+                Price: €
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
-                Description: {description} 
+                Description: {text};
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -67,11 +69,10 @@ const Component = ({className, postById, loggedUserId}) => {
       </Paper>
       <div className={styles.contactContainer}>
         <Paper className={styles.contact}>
-          <h2>Contact: {contact}</h2>
-          <p>Mail: {mail}</p>
-          <p>Phone number : {phone}</p>
+          <h2>Contact: </h2>
+          <p>Email: {author}</p>
         </Paper>
-        {renderIfAuthor(userId, loggedUserId)}
+        {/* {renderIfAuthor(userId, loggedUserId)} */}
       </div>
     </div>
   );
@@ -82,20 +83,21 @@ Component.propTypes = {
   className: PropTypes.string,
   postById: PropTypes.object,
   loggedUserId: PropTypes.number,
+  fetchPublishedPostsById: PropTypes.func,
+  getPublishedById: PropTypes.object,
 };
 
 const mapStateToProps = (state, props) => ({
-  postById: getPostByID(state, Number(props.match.params.id)),
+  getPublishedById: getAllPublished(state),
   loggedUserId: getUserStatus(state),
 });
 
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
+const mapDispatchToProps = (dispatch, props) => ({
+  fetchPublishedPostsById: () => dispatch(fetchPublishedById(props.match.params.id)),
+});
 
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
-const Container = connect(mapStateToProps)(Component);
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 
 export {

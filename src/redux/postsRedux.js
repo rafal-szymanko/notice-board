@@ -1,9 +1,8 @@
 import axios from 'axios';
 import {initialState} from './initialState';
 /* selectors */
-export const getAllPublished = ({posts}) => posts.data.filter(item => item.status === 'published');
-export const getPostByID = ({posts}, postId) => posts.data.filter(post => postId === post._id);
-
+export const getAllPublished = ({posts}) => posts.data;
+export const getPostById = ({posts}) => posts.data;
 
 export const getPostByAuthor = ({posts}, id) => posts.data.filter(post => id === post.userId);
 
@@ -33,6 +32,22 @@ export const fetchPublished = () => {
     if(initialState.posts.data.length === 0 && initialState.posts.loading.active === false) {
       axios
         .get('http://localhost:8000/api/posts')
+        .then(res => {
+          dispatch(fetchSuccess(res.data));
+        })
+        .catch(err => {
+          dispatch(fetchError(err.message || true));
+        });
+    }  };
+};
+
+export const fetchPublishedById = (id) => {
+  
+  return (dispatch, getState) => {
+    dispatch(fetchStarted());
+    if(initialState.posts.data.length === 0 && initialState.posts.loading.active === false) {
+      axios
+        .get(`http://localhost:8000/api/post/${id}`)
         .then(res => {
           dispatch(fetchSuccess(res.data));
         })

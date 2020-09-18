@@ -50,7 +50,7 @@ const Component = ({className, loggedUserId}) => {
             <form className={styles.formContainer} noValidate autoComplete="off" onSubmit={handleSubmit}>
               <TextField id="outlined-basic" label="Name" variant="outlined" name="name" onChange={handleOnChange} required />
               <TextField id="outlined-basic" label="Phone number" variant="outlined" name="phone" onChange={handleOnChange} required/>
-              <TextField id="outlined-basic" label="Email" type="email" variant="outlined" name="email" onChange={handleOnChange} required/>
+              <TextField id="outlined-basic" label="Email" variant="outlined" name="email" onChange={handleOnChange} required/>
               <TextField id="outlined-basic" label="Title" variant="outlined" name="title" onChange={handleOnChange} required/>
               <TextField id="outlined-basic" label="Price" variant="outlined" name="price"onChange={handleOnChange} required/>
               <TextField id="outlined-multiline-static" label="Description" multiline rows={4} variant="outlined" name="description" onChange={handleOnChange} required/>
