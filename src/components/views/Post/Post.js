@@ -25,7 +25,7 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
 
   useEffect(() => {(fetchPublishedPostsById());}, [fetchPublishedPostsById]);
 
-  const {author, text} = getPublishedById;
+  // const {author, text} = getPublishedById;
 
   // const renderIfAuthor = (postAuthorId, loggedUserId) => {
   //   if(loggedUserId === postAuthorId) {
@@ -61,7 +61,7 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
                 Price: €
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
-                Description: {text};
+                Description:
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -70,7 +70,7 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
       <div className={styles.contactContainer}>
         <Paper className={styles.contact}>
           <h2>Contact: </h2>
-          <p>Email: {author}</p>
+          <p>Email:</p>
         </Paper>
         {/* {renderIfAuthor(userId, loggedUserId)} */}
       </div>
@@ -81,10 +81,12 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  postById: PropTypes.object,
   loggedUserId: PropTypes.number,
   fetchPublishedPostsById: PropTypes.func,
-  getPublishedById: PropTypes.object,
+  getPublishedById: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
 };
 
 const mapStateToProps = (state, props) => ({

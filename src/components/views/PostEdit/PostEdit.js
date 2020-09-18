@@ -104,7 +104,6 @@ const Component = ({className, children, loggedUserId}) => {
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  postById: PropTypes.object,
   loggedUserId: PropTypes.number,
 };
 
