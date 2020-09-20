@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import {getAllPublished, getUserStatus, fetchPublishedById} from '../../../redux/postsRedux';
+import {getPostById, fetchPublishedById} from '../../../redux/postRedux';
+import {getUserStatus} from '../../../redux/postsRedux';
 
 import styles from './Post.module.scss';
 
@@ -21,27 +22,34 @@ import EditIcon from '@material-ui/icons/Edit';
 
 
 
-const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
+const Component = ({className, fetchPublishedPostsById, getPublishedById, loggedUser}) => {
 
   useEffect(() => {(fetchPublishedPostsById());}, [fetchPublishedPostsById]);
 
-  // const {author, text} = getPublishedById;
+  console.log(getPublishedById);
 
-  // const renderIfAuthor = (postAuthorId, loggedUserId) => {
-  //   if(loggedUserId === postAuthorId) {
-  //     return (
-  //       <Link to={`/post/${_id}/edit`}>
-  //         <Button
-  //           variant="contained"
-  //           color="default"
-  //           startIcon={<EditIcon />}
-  //         >
-  //           Edit your Ad
-  //         </Button>
-  //       </Link>
-  //     );
-  //   }
-  // };
+  const {author, title, text, photo, phone, location, price, created, updated, _id} = getPublishedById;
+
+  const parseData = (date) => {
+    const [dateAndTime, localTime] = Date(date).split('GMT');
+    return dateAndTime;
+  };
+
+  const renderIfAuthor = (postAuthor, loggedUser) => {
+    if((postAuthor === loggedUser.mail) || loggedUser.admin === true) {
+      return (
+        <Link to={`/post/${_id}/edit`}>
+          <Button
+            variant="contained"
+            color="default"
+            startIcon={<EditIcon />}
+          >
+            Edit your Ad
+          </Button>
+        </Link>
+      );
+    }
+  };
 
   return(
     <div className={clsx(className, styles.root)}>
@@ -50,18 +58,24 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
           <CardActionArea>
             <CardMedia
               className={styles.cardMedia}
-              image={'img'}
-              title={'title'}
+              image={`http://localhost:8000/uploads/${photo}`}
+              title={title}
             />
             <CardContent>
               <Typography gutterBottom variant="h4" component="h2">
-                Title: 
+                {title}
               </Typography>
-              <Typography variant="h5" component="h2">
-                Price: €
+              <Typography variant="h6" component="h2">
+                Price: {price ? price : 'to be agreed'}
               </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                Description:
+              <Typography variant="body1" color="textSecondary" component="p">
+                Description: {text}
+              </Typography>
+              <Typography variant="body1" color="textSecondary" component="p">
+                Created: {parseData(created)}
+              </Typography>
+              <Typography variant="body1" color="textSecondary" component="p">
+                Last update: {parseData(updated)}
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -70,9 +84,11 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
       <div className={styles.contactContainer}>
         <Paper className={styles.contact}>
           <h2>Contact: </h2>
-          <p>Email:</p>
+          <p>Email: {author}</p>
+          {phone ? <p> Phone number: {phone}</p> : null}
+          {location ? <p> Location: {location}</p> : null}
         </Paper>
-        {/* {renderIfAuthor(userId, loggedUserId)} */}
+        {renderIfAuthor(author, loggedUser)}
       </div>
     </div>
   );
@@ -81,7 +97,7 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById}) => {
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  loggedUserId: PropTypes.number,
+  loggedUser: PropTypes.object,
   fetchPublishedPostsById: PropTypes.func,
   getPublishedById: PropTypes.oneOfType([
     PropTypes.object,
@@ -90,8 +106,8 @@ Component.propTypes = {
 };
 
 const mapStateToProps = (state, props) => ({
-  getPublishedById: getAllPublished(state),
-  loggedUserId: getUserStatus(state),
+  getPublishedById: getPostById(state),
+  loggedUser: getUserStatus(state),
 });
 
 

@@ -5,7 +5,7 @@
     flex-direction: column;
 
     .paper {
-        height: 70vh;
+        height: 80vh;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -15,6 +15,9 @@
             justify-content: space-between;
             width: 60%;
             height: 90%;
+            .input {
+                width: 100%;
+            }
         }
     }
 

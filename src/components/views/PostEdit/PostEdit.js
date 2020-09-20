@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
+
 import { connect } from 'react-redux';
+import {getPostById, fetchPublishedById} from '../../../redux/postRedux';
 import {getUserStatus} from '../../../redux/postsRedux';
 
 import styles from './PostEdit.module.scss';
@@ -19,100 +21,114 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { get } from 'mongoose';
 
 
 
 
-const Component = ({className, children, loggedUserId}) => {
+const Component = ({className, children, loggedUser, getPublishedById, fetchPublishedPostsById}) => {
 
-  // const {description, price, mail, contact, title, phone, id, userId} = postById;
+  useEffect(() => {(fetchPublishedPostsById());}, [fetchPublishedPostsById]);
 
-  // const [formContent, setFormContent]= useState({
-  //   name: '',
-  //   phone: '',
-  //   email: '',
-  //   title: '',
-  //   price: '',
-  //   description: '',
-  // });
+  const {author, title, text, photo, phone, location, price, created, updated, _id} = getPublishedById;
 
-  // const handleOnChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setFormContent({
-  //     ...formContent,
-  //     [name]: value,
-  //   });
-  // }; 
 
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   console.log(formContent);
-  // };
+  const [formContent, setFormContent]= useState({
+    location: '',
+    phone: '',
+    email: '',
+    title: '',
+    price: '',
+    text: '',
+  });
 
-  // const renderIfAuthor = () => {
-  //   if(loggedUserId === userId) {
-  //     return (
-  //       <div className={clsx(className, styles.root)}>
-  //         <Paper className={styles.description}>
-  //           <Card className={styles.card}>
-  //             <CardActionArea>
-  //               <CardMedia
-  //                 className={styles.cardMedia}
-  //                 image={'img'}
-  //                 title={title}
-  //               />
-  //               <CardContent>
-  //                 <Typography gutterBottom variant="h4" component="h2">
-  //                   {title}
-  //                 </Typography>
-  //                 <Typography variant="h5" component="h2">
-  //                 Price: {price} €
-  //                 </Typography>
-  //                 <Typography variant="body2" color="textSecondary" component="p">
-  //                 Description: {description} 
-  //                 </Typography>
-  //               </CardContent>
-  //             </CardActionArea>
-  //           </Card>
-  //         </Paper>
-  //         <Paper className={styles.form}>
-  //           <form className={styles.formContainer} noValidate autoComplete="off" onSubmit={handleSubmit}>
-  //             <TextField id="outlined-basic" label="Name" variant="outlined" defaultValue={contact} name="name" onChange={handleOnChange} required />
-  //             <TextField id="outlined-basic" label="Phone number" variant="outlined" defaultValue={phone} name="phone" onChange={handleOnChange} required/>
-  //             <TextField id="outlined-basic" label="Email" type="email" variant="outlined"  defaultValue={mail} name="email" onChange={handleOnChange} required/>
-  //             <TextField id="outlined-basic" label="Title" variant="outlined" name="title" defaultValue={title} onChange={handleOnChange} required/>
-  //             <TextField id="outlined-basic" label="Price" variant="outlined" name="price"defaultValue={price} onChange={handleOnChange} required/>
-  //             <TextField id="outlined-multiline-static" label="Description" multiline rows={4} defaultValue={description} variant="outlined" name="description" onChange={handleOnChange} required/>
-  //             <Button variant="contained" color="primary" type="submit">Confirm your change</Button>
-  //           </form>
-  //         </Paper>
-  //       </div>
-  //     );
-  //   } else {
-  //     return <NotFound></NotFound>;
-  //   }
-  // };
+  const handleOnChange = (event) => {
+    const { name, value } = event.target;
+    setFormContent({
+      ...formContent,
+      [name]: value,
+    });
+  }; 
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(formContent);
+  };
+
+  const renderIfAuthorOrAdmin = () => {
+    if((author === loggedUser.mail) || loggedUser.admin === true) {
+      return (
+        <div className={clsx(className, styles.root)}>
+          <Paper className={styles.description}>
+            <Card className={styles.card}>
+              <CardActionArea>
+                <CardMedia
+                  className={styles.cardMedia}
+                  image={`http://localhost:8000/uploads/${photo}`}
+                  title={title}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h4" component="h2">
+                    {title}
+                  </Typography>
+                  <Typography variant="h5" component="h2">
+                  Price: {price} €
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary" component="p">
+                  Description: {text} 
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Paper>
+          <Paper className={styles.form}>
+            <form className={styles.formContainer} noValidate autoComplete="off" onSubmit={handleSubmit}>
+              <TextField id="outlined-basic" label="Phone number" variant="outlined" value={phone} name="phone" onChange={handleOnChange} required/>
+              <TextField id="outlined-basic" label="Email" type="email" variant="outlined"  defaultValue={author} name="email" onChange={handleOnChange} required/>
+              <TextField id="outlined-basic" label="Title" variant="outlined" name="title" defaultValue={title} onChange={handleOnChange} required/>
+              <TextField id="outlined-basic" label="Location" variant="outlined" name="location" defaultValue={location} onChange={handleOnChange} required/>
+              <TextField id="outlined-basic" label="Price" variant="outlined" name="price" defaultValue={price} onChange={handleOnChange} required/>
+              <TextField id="outlined-multiline-static" label="Description" multiline rows={4} defaultValue={text} variant="outlined" name="description" onChange={handleOnChange} required/>
+              <Button variant="contained" color="primary" type="submit">Confirm your change</Button>
+            </form>
+          </Paper>
+        </div>
+      );
+    } else {
+      return <NotFound></NotFound>;
+    }
+  };
   
-  // return(
-  //   <div>
-  //     {renderIfAuthor()}
-  //   </div>
-  // );
+  return(
+    <div>
+      {renderIfAuthorOrAdmin()}
+    </div>
+  );
 };
 
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  loggedUserId: PropTypes.number,
+  postById: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  loggedUser: PropTypes.object,
+  getPublishedById: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]),
+  fetchPublishedPostsById: PropTypes.func,
 };
 
+
 const mapStateToProps = (state, props) => ({
-  // postById: get(state, Number(props.match.params.id)),
-  loggedUserId: getUserStatus(state),
+  getPublishedById: getPostById(state),
+  loggedUser: getUserStatus(state),
 });
 
-const Container = connect(mapStateToProps)(Component);
+
+const mapDispatchToProps = (dispatch, props) => ({
+  fetchPublishedPostsById: () => dispatch(fetchPublishedById(props.match.params.id)),
+});
+
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 
 export {

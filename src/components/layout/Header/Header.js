@@ -87,18 +87,13 @@ const Component = ({className, status}) => {
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  status: PropTypes.number,
+  status: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
   status: getUserStatus(state),
 });
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
-
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 const Container = connect(mapStateToProps)(Component);
 
 export {

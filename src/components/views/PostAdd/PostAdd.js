@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
 
-import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 
@@ -11,22 +10,29 @@ import { connect } from 'react-redux';
 
 import styles from './PostAdd.module.scss';
 import { getUserStatus } from '../../../redux/postsRedux';
+import { addPostRequest } from '../../../redux/postRedux';
 import { NotFound } from '../NotFound/NotFound';
 
+import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
+import ImageUploader from 'react-images-upload';
 
 
-const Component = ({className, loggedUserId}) => {
+
+const Component = ({className, loggedUserId, addPost}) => {
 
   const [formContent, setFormContent]= useState({
-    name: '',
-    phone: '',
-    email: '',
+    author: '',
+    created: '',
+    updated: '',
+    status: 'draft',
     title: '',
+    text: '',
     price: '',
-    description: '',
+    phone: '',
+    photo: '',
+    location: '',
   });
-
-
+  
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setFormContent({
@@ -35,10 +41,43 @@ const Component = ({className, loggedUserId}) => {
     });
   }; 
 
+  const handleOnChangeUpload = (files) => {
+    setFormContent({
+      ...formContent,
+      photo: files[0],
+    });
+
+  }; 
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    
+    const formData = new FormData();
 
-    console.log(formContent);
+    for(let key of ['author', 'title', 'text', 'price', 'phone', 'location']) {
+      formData.append(key, formContent[key]);
+    }
+
+    formData.append('photo', formContent.photo);
+    formData.append('created', new Date());
+    formData.append('updated', new Date());
+    formData.append('status', 'published');
+    formData.append('photo', formContent.photo);
+
+
+    addPost(formData);
+
+    setFormContent({
+      author: '',
+      created: '',
+      updated: '',
+      status: 'draft',
+      title: '',
+      text: '',
+      price: '',
+      phone: '',
+      location: '',
+    });
   };
 
   const renderIfLogged = () => {
@@ -47,15 +86,26 @@ const Component = ({className, loggedUserId}) => {
         <div>
           <h2>Add new advertisement</h2>
           <Paper className={styles.paper}>
-            <form className={styles.formContainer} noValidate autoComplete="off" onSubmit={handleSubmit}>
-              <TextField id="outlined-basic" label="Name" variant="outlined" name="name" onChange={handleOnChange} required />
-              <TextField id="outlined-basic" label="Phone number" variant="outlined" name="phone" onChange={handleOnChange} required/>
-              <TextField id="outlined-basic" label="Email" variant="outlined" name="email" onChange={handleOnChange} required/>
-              <TextField id="outlined-basic" label="Title" variant="outlined" name="title" onChange={handleOnChange} required/>
-              <TextField id="outlined-basic" label="Price" variant="outlined" name="price"onChange={handleOnChange} required/>
-              <TextField id="outlined-multiline-static" label="Description" multiline rows={4} variant="outlined" name="description" onChange={handleOnChange} required/>
+            <ValidatorForm className={styles.formContainer} noValidate autoComplete="off" onSubmit={handleSubmit} onError={errors => console.log(errors)}>
+              <TextValidator className={styles.input} id="outlined-basic" label="Author" variant="outlined" name="author" onChange={handleOnChange} value={formContent.author} validators={['required', 'isEmail']} errorMessages={['this field is required', 'email is not valid']} />
+              <TextValidator className={styles.input} id="outlined-basic" label="Phone number" variant="outlined" name="phone" onChange={handleOnChange} value={formContent.phone} validators={['matchRegexp:^[0-9]']} errorMessages={['phone number is not valid']}/>
+              <TextValidator className={styles.input} id="outlined-basic" label="Title" variant="outlined" name="title" onChange={handleOnChange} value={formContent.title} validators={['required']} errorMessages={['this field is required']}/>
+              <TextValidator className={styles.input} id="outlined-basic" label="Location" variant="outlined" name="location" onChange={handleOnChange}/>
+              <TextValidator className={styles.input} id="outlined-basic" label="Price" variant="outlined" name="price"onChange={handleOnChange} value={formContent.price} validators={['matchRegexp:^[0-9]']} errorMessages={['price is not valid']}/>
+              <TextValidator className={styles.input} id="outlined-multiline-static" label="Description" multiline rows={4} variant="outlined" name="text" onChange={handleOnChange} value={formContent.text} validators={['required']} errorMessages={['this field is required']}/>
+              <ImageUploader
+                withIcon={true}
+                buttonText='Choose image'
+                imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                maxFileSize={5242880}
+                withPreview={true}
+                onChange={handleOnChangeUpload}
+                singleImage={true}
+                className={styles.imageInput}
+                fileContainerStyle ={{flexDirection: 'row'}}
+              />
               <Button variant="contained" color="primary" type="submit">Confirm</Button>
-            </form>
+            </ValidatorForm>
           </Paper>
         </div>
       );
@@ -75,17 +125,18 @@ Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   loggedUserId: PropTypes.number,
+  addPost: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
   loggedUserId: getUserStatus(state),
 });
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
+const mapDispatchToProps = dispatch => ({
+  addPost: (post, data) => dispatch(addPostRequest(post, data)),
+});
 
-const Container = connect(mapStateToProps)(Component);
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   // Component as PostAdd,

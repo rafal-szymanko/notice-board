@@ -1,12 +1,11 @@
 import axios from 'axios';
-import {initialState} from './initialState';
+
 /* selectors */
 export const getAllPublished = ({posts}) => posts.data;
-export const getPostById = ({posts}) => posts.data;
 
 export const getPostByAuthor = ({posts}, id) => posts.data.filter(post => id === post.userId);
 
-export const getUserStatus = ({userId}) => userId;
+export const getUserStatus = ({loggedUser}) => loggedUser;
 
 
 /* action name creator */
@@ -25,11 +24,12 @@ export const fetchError = payload => ({ payload, type: FETCH_ERROR });
 
 /* thunk creators */
 export const fetchPublished = () => {
-  
-  return (dispatch, getState) => {
-    dispatch(fetchStarted());
 
-    if(initialState.posts.data.length === 0 && initialState.posts.loading.active === false) {
+  return (dispatch, getState) => {
+    const state = getState();
+    
+    if(state.posts.data.length === 0 && state.posts.loading.active === false) {
+      dispatch(fetchStarted());
       axios
         .get('http://localhost:8000/api/posts')
         .then(res => {
@@ -38,27 +38,11 @@ export const fetchPublished = () => {
         .catch(err => {
           dispatch(fetchError(err.message || true));
         });
-    }  };
-};
-
-export const fetchPublishedById = (id) => {
-  
-  return (dispatch, getState) => {
-    dispatch(fetchStarted());
-    if(initialState.posts.data.length === 0 && initialState.posts.loading.active === false) {
-      axios
-        .get(`http://localhost:8000/api/post/${id}`)
-        .then(res => {
-          dispatch(fetchSuccess(res.data));
-        })
-        .catch(err => {
-          dispatch(fetchError(err.message || true));
-        });
-    }
+    } 
   };
 };
 
-/* reducer */
+/* reducers */
 export const reducer = (statePart = [], action = {}) => {
   switch (action.type) {
     case FETCH_START: {

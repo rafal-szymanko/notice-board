@@ -17,9 +17,7 @@ import AddBoxIcon from '@material-ui/icons/AddBox';
 
 const Component = ({className, userId, posts, fetchPublishedPosts}) => {
 
-  useEffect(() => {(fetchPublishedPosts());}, [fetchPublishedPosts]);
-
-  console.log(posts);
+  useEffect(() => {fetchPublishedPosts();}, [fetchPublishedPosts]);
 
   const renderIfLogged = (userId) => {
     if(userId) {
@@ -54,7 +52,7 @@ Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   posts: PropTypes.array,
-  userId: PropTypes.number,
+  userId: PropTypes.object,
   fetchPublishedPosts: PropTypes.func,
 };
 
