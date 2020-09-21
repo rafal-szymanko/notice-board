@@ -19,6 +19,7 @@ const END_REQUEST = createActionName('END_REQUEST');
 const ERROR_REQUEST = createActionName('ERROR_REQUEST');
 
 const ADD_POST = createActionName('ADD_POST');
+const UPDATE_POST = createActionName('UPDATE_POST');
 
 
 /* action creators */
@@ -31,20 +32,20 @@ export const endRequest = payload => ({ payload, type: END_REQUEST });
 export const errorRequest = payload => ({ payload, type: ERROR_REQUEST });
 
 export const addPost = payload => ({ payload, type: ADD_POST });
+export const updatePost = payload => ({ payload, type: UPDATE_POST });
+
 /* thunk creators */
 
-export const fetchPublishedById = (id) => {
+export const fetchPublishedById =  (id) => {
   
-  return (dispatch, getState) => {
+  return async (dispatch, getState)  => {
     dispatch(fetchStarted());
-    axios
-      .get(`http://localhost:8000/api/post/${id}`)
-      .then(res => {
-        dispatch(fetchSuccess(res.data));
-      })
-      .catch(err => {
-        dispatch(fetchError(err.message || true));
-      });
+    try {
+      let res = await axios.get(`http://localhost:8000/api/post/${id}`);
+      dispatch(fetchSuccess(res.data));
+    } catch(e) {
+      dispatch(fetchError(e.message || true));
+    }
   };
 };
 
@@ -64,16 +65,38 @@ export const addPostRequest = (post) => {
           },
         },
       );
-
-      // let res = await axios.post(`/api/post/add`, post);
       dispatch(addPost(res));
       dispatch(endRequest({ name: 'ADD_POST' }));
   
     } catch(e) {
       dispatch(errorRequest({ name: 'ADD_POST', error: e.message }));
     }
-  };
+  }; 
+};
+
+export const addPutRequest = (post, id) => {
+
+
+  return async dispatch => {
+    dispatch(startRequest({ name: 'UPDATE_POST' }));
+
+    try {
+      let res = await axios.put(
+        `/api/post/${id}/edit`,
+        post,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      dispatch(updatePost(res));
+      dispatch(endRequest({ name: 'UPDATE_POST' }));
   
+    } catch(e) {
+      dispatch(errorRequest({ name: 'UPDATE_POST', error: e.message }));
+    }
+  }; 
 };
 
 

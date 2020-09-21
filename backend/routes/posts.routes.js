@@ -31,6 +31,31 @@ router.get('/post/:id', async (req, res) => {
 
 router.post('/post/add', async (req, res,) => {
 
+  const {author, title, text } = req.fields;
+  const file = req.files.photo;
+
+
+
+  function validateEmail(author) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(author).toLowerCase());
+  }
+
+  if (title && author && validateEmail(author) && text) {
+    try {
+      const newPost = new Post(
+        {...req.fields, photo: file ? file.path.split('/').slice(-1)[0] : null});    
+      await newPost.save();
+      res.json(await Post.find());
+    }
+    catch(err) {
+      res.status(500).json({message: err});
+    }
+  }
+});
+
+router.put('/post/:id/edit', async (req, res,) => {
+
   const {author, created, updated, status, title, text, price, phone, location} = req.fields;
   const file = req.files.photo;
 
@@ -39,12 +64,11 @@ router.post('/post/add', async (req, res,) => {
     return re.test(String(author).toLowerCase());
   }
 
-  const fileName = file.path.split('/').slice(-1)[0];
-
   if (title && author && validateEmail(author) && text) {
     try {
-      const newPost = new Post({author: author, created: created, updated: updated, price: price, status: status, title: title, text: text, photo: fileName, phone: phone, location: location});    
-      await newPost.save();
+      console.log(req.fields);
+      const find = await Post.findOneAndUpdate({_id: req.params.id}, {...req.fields, photo: file ? file.path.split('/').slice(-1)[0] : null}, {returnOriginal: false});
+      console.log(find);
       res.json(await Post.find());
     }
     catch(err) {

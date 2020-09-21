@@ -5,7 +5,7 @@
 .root {
     display: flex;
     .description {
-        width: 60vw;
+        width: 45vw;
         .card {
             width: 100%;
             margin-top: 50px;
@@ -16,7 +16,7 @@
     };
 
     .form {
-        width: 30vw;
+        width: 45vw;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -26,6 +26,9 @@
             justify-content: space-between;
             width: 60%;
             height: 95%;
+            .input {
+                width: 100%;
+            }
         };
     };
     .description, .form {
@@ -33,3 +36,13 @@
     }
 };
 
+.progressContainer {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .progressCircle {
+        width: 150px;
+        height: 150px;
+    }
+}

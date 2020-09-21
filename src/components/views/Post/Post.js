@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import {getPostById, fetchPublishedById} from '../../../redux/postRedux';
 import {getUserStatus} from '../../../redux/postsRedux';
 
+import {parseData} from '../../../utils/parseData';
+
 import styles from './Post.module.scss';
 
 import {Link} from 'react-router-dom';
@@ -26,14 +28,7 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById, logged
 
   useEffect(() => {(fetchPublishedPostsById());}, [fetchPublishedPostsById]);
 
-  console.log(getPublishedById);
-
   const {author, title, text, photo, phone, location, price, created, updated, _id} = getPublishedById;
-
-  const parseData = (date) => {
-    const [dateAndTime, localTime] = Date(date).split('GMT');
-    return dateAndTime;
-  };
 
   const renderIfAuthor = (postAuthor, loggedUser) => {
     if((postAuthor === loggedUser.mail) || loggedUser.admin === true) {
@@ -72,10 +67,10 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById, logged
                 Description: {text}
               </Typography>
               <Typography variant="body1" color="textSecondary" component="p">
-                Created: {parseData(created)}
+                Created: {created}
               </Typography>
               <Typography variant="body1" color="textSecondary" component="p">
-                Last update: {parseData(updated)}
+                Last update: {updated}
               </Typography>
             </CardContent>
           </CardActionArea>

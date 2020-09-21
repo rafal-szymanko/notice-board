@@ -46,7 +46,6 @@ const Component = ({className, loggedUserId, addPost}) => {
       ...formContent,
       photo: files[0],
     });
-
   }; 
 
   const handleSubmit = (event) => {
@@ -62,8 +61,6 @@ const Component = ({className, loggedUserId, addPost}) => {
     formData.append('created', new Date());
     formData.append('updated', new Date());
     formData.append('status', 'published');
-    formData.append('photo', formContent.photo);
-
 
     addPost(formData);
 

@@ -17,7 +17,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
 
-const Component = ({className, title, author, _id, photo}) => {
+const Component = ({className, title, author, _id}) => {
 
   return (
     <div className={clsx(className, styles.root)}>
@@ -26,7 +26,7 @@ const Component = ({className, title, author, _id, photo}) => {
           <CardActionArea>
             <CardMedia
               className={styles.cardMedia}
-              image={photo}
+              image={'img'}
               title={title}
             />
             <CardContent>
