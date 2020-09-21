@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 import styles from './PostAdd.module.scss';
 import { getUserStatus } from '../../../redux/postsRedux';
-import { addPostRequest } from '../../../redux/postRedux';
+import { addPostRequest} from '../../../redux/postRedux';
 import { NotFound } from '../NotFound/NotFound';
 
 import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
@@ -19,7 +19,7 @@ import ImageUploader from 'react-images-upload';
 
 
 const Component = ({className, loggedUserId, addPost}) => {
-
+  
   const [formContent, setFormContent]= useState({
     author: '',
     created: '',
@@ -50,6 +50,8 @@ const Component = ({className, loggedUserId, addPost}) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    console.log(formContent);
     
     const formData = new FormData();
 
@@ -77,6 +79,20 @@ const Component = ({className, loggedUserId, addPost}) => {
     });
   };
 
+  ValidatorForm.addValidationRule('minLengthTitle', () => {
+    if (formContent.title.length < 10) {
+      return false;
+    }
+    return true;
+  });
+
+  ValidatorForm.addValidationRule('minLengthText', () => {
+    if (formContent.text.length < 20) {
+      return false;
+    }
+    return true;
+  });
+
   const renderIfLogged = () => {
     if (loggedUserId) {
       return (
@@ -86,10 +102,10 @@ const Component = ({className, loggedUserId, addPost}) => {
             <ValidatorForm className={styles.formContainer} noValidate autoComplete="off" onSubmit={handleSubmit} onError={errors => console.log(errors)}>
               <TextValidator className={styles.input} id="outlined-basic" label="Author" variant="outlined" name="author" onChange={handleOnChange} value={formContent.author} validators={['required', 'isEmail']} errorMessages={['this field is required', 'email is not valid']} />
               <TextValidator className={styles.input} id="outlined-basic" label="Phone number" variant="outlined" name="phone" onChange={handleOnChange} value={formContent.phone} validators={['matchRegexp:^[0-9]']} errorMessages={['phone number is not valid']}/>
-              <TextValidator className={styles.input} id="outlined-basic" label="Title" variant="outlined" name="title" onChange={handleOnChange} value={formContent.title} validators={['required']} errorMessages={['this field is required']}/>
+              <TextValidator className={styles.input} id="outlined-basic" label="Title (min 10 characters)" variant="outlined" name="title" onChange={handleOnChange} value={formContent.title} validators={['required', 'minLengthTitle']} errorMessages={['this field is required', 'title is too short']}/>
               <TextValidator className={styles.input} id="outlined-basic" label="Location" variant="outlined" name="location" onChange={handleOnChange}/>
               <TextValidator className={styles.input} id="outlined-basic" label="Price" variant="outlined" name="price"onChange={handleOnChange} value={formContent.price} validators={['matchRegexp:^[0-9]']} errorMessages={['price is not valid']}/>
-              <TextValidator className={styles.input} id="outlined-multiline-static" label="Description" multiline rows={4} variant="outlined" name="text" onChange={handleOnChange} value={formContent.text} validators={['required']} errorMessages={['this field is required']}/>
+              <TextValidator className={styles.input} id="outlined-multiline-static" label="Description (min 20 characters)" multiline rows={4} variant="outlined" name="text" onChange={handleOnChange} value={formContent.text} validators={['required', 'minLengthText']} errorMessages={['this field is required','description is too short']}/>
               <ImageUploader
                 withIcon={true}
                 buttonText='Choose image'
@@ -121,7 +137,7 @@ const Component = ({className, loggedUserId, addPost}) => {
 Component.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
-  loggedUserId: PropTypes.number,
+  loggedUserId: PropTypes.object,
   addPost: PropTypes.func,
 };
 

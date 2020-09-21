@@ -35,7 +35,7 @@ const Component = ({className, loggedUser, getPublishedById, fetchPublishedPosts
 
   const [formContent, setFormContent]= useState({});
 
-  const {author, title, text, photo, phone, location, price, created, updated, _id, status} = getPublishedById;
+  const {author, title, text, photo, price, created, updated} = getPublishedById;
 
 
   useEffect(() => {(fetchPublishedPostsById());}, [fetchPublishedPostsById]);

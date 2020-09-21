@@ -8,6 +8,7 @@ import {getPostById, fetchPublishedById} from '../../../redux/postRedux';
 import {getUserStatus} from '../../../redux/postsRedux';
 
 import {parseData} from '../../../utils/parseData';
+import {isNotEmpty} from '../../../utils/checkIfObjNotEmpty';
 
 import styles from './Post.module.scss';
 
@@ -30,6 +31,7 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById, logged
 
   const {author, title, text, photo, phone, location, price, created, updated, _id} = getPublishedById;
 
+
   const renderIfAuthor = (postAuthor, loggedUser) => {
     if((postAuthor === loggedUser.mail) || loggedUser.admin === true) {
       return (
@@ -46,45 +48,55 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById, logged
     }
   };
 
+  const renderIfFetched = () => {
+    if(isNotEmpty(getPublishedById)) {
+      return (
+        <div className={clsx(className, styles.root)}>
+          <Paper className={styles.description}>
+            <Card className={styles.card}>
+              <CardActionArea>
+                <CardMedia
+                  className={styles.cardMedia}
+                  image={`http://localhost:8000/uploads/${photo}`}
+                  title={title}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h4" component="h2">
+                    {title}
+                  </Typography>
+                  <Typography variant="h6" component="h2">
+                  Price: {price ? price : 'to be agreed'}
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary" component="p">
+                  Description: {text}
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary" component="p">
+                  Created: {parseData(created, getPublishedById)}
+                  </Typography>
+                  <Typography variant="body1" color="textSecondary" component="p">
+                  Last update: {parseData(updated, getPublishedById)}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Paper>
+          <div className={styles.contactContainer}>
+            <Paper className={styles.contact}>
+              <h2>Contact: </h2>
+              <p>Email: {author}</p>
+              {phone ? <p> Phone number: {phone}</p> : null}
+              {location ? <p> Location: {location}</p> : null}
+            </Paper>
+            {renderIfAuthor(author, loggedUser)}
+          </div>
+        </div>
+      );
+    }
+  };
+
   return(
-    <div className={clsx(className, styles.root)}>
-      <Paper className={styles.description}>
-        <Card className={styles.card}>
-          <CardActionArea>
-            <CardMedia
-              className={styles.cardMedia}
-              image={`http://localhost:8000/uploads/${photo}`}
-              title={title}
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h4" component="h2">
-                {title}
-              </Typography>
-              <Typography variant="h6" component="h2">
-                Price: {price ? price : 'to be agreed'}
-              </Typography>
-              <Typography variant="body1" color="textSecondary" component="p">
-                Description: {text}
-              </Typography>
-              <Typography variant="body1" color="textSecondary" component="p">
-                Created: {created}
-              </Typography>
-              <Typography variant="body1" color="textSecondary" component="p">
-                Last update: {updated}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      </Paper>
-      <div className={styles.contactContainer}>
-        <Paper className={styles.contact}>
-          <h2>Contact: </h2>
-          <p>Email: {author}</p>
-          {phone ? <p> Phone number: {phone}</p> : null}
-          {location ? <p> Location: {location}</p> : null}
-        </Paper>
-        {renderIfAuthor(author, loggedUser)}
-      </div>
+    <div>
+      {renderIfFetched()}
     </div>
   );
 };

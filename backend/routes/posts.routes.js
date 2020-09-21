@@ -37,6 +37,7 @@ router.post('/post/add', async (req, res,) => {
 
 
   function validateEmail(author) {
+    // eslint-disable-next-line no-useless-escape
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(author).toLowerCase());
   }
@@ -56,10 +57,11 @@ router.post('/post/add', async (req, res,) => {
 
 router.put('/post/:id/edit', async (req, res,) => {
 
-  const {author, created, updated, status, title, text, price, phone, location} = req.fields;
+  const {author, title, text, photo} = req.fields;
   const file = req.files.photo;
 
   function validateEmail(author) {
+    // eslint-disable-next-line no-useless-escape
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(author).toLowerCase());
   }
@@ -67,7 +69,7 @@ router.put('/post/:id/edit', async (req, res,) => {
   if (title && author && validateEmail(author) && text) {
     try {
       console.log(req.fields);
-      const find = await Post.findOneAndUpdate({_id: req.params.id}, {...req.fields, photo: file ? file.path.split('/').slice(-1)[0] : null}, {returnOriginal: false});
+      const find = await Post.findOneAndUpdate({_id: req.params.id}, {...req.fields, photo: file ? file.path.split('/').slice(-1)[0] : photo}, {returnOriginal: false});
       console.log(find);
       res.json(await Post.find());
     }
