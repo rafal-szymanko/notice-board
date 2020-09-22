@@ -41,6 +41,20 @@ const Component = ({className, loggedUser, getPublishedById, fetchPublishedPosts
   useEffect(() => {(fetchPublishedPostsById());}, [fetchPublishedPostsById]);
   useEffect(() => {setFormContent(getPublishedById);}, [getPublishedById]);
 
+  ValidatorForm.addValidationRule('minLengthTitle', () => {
+    if (formContent.title.length < 10) {
+      return false;
+    }
+    return true;
+  });
+
+  ValidatorForm.addValidationRule('minLengthText', () => {
+    if (formContent.text.length < 20) {
+      return false;
+    }
+    return true;
+  });
+
   const routeChange = () =>{ 
     history.goBack();
   };
@@ -111,10 +125,10 @@ const Component = ({className, loggedUser, getPublishedById, fetchPublishedPosts
               <ValidatorForm className={styles.formContainer} noValidate autoComplete="off" onSubmit={handleSubmit} onError={errors => console.log(errors)}>
                 <TextValidator className={styles.input} value={formContent.author} id="outlined-basic" label="Author" variant="outlined" name="author" onChange={handleOnChange} validators={['required', 'isEmail']} errorMessages={['this field is required', 'email is not valid']} />
                 <TextValidator className={styles.input} value={formContent.phone ? formContent.phone : ''} id="outlined-basic" label="Phone number" variant="outlined" name="phone" onChange={handleOnChange} validators={['matchRegexp:^[0-9]']} errorMessages={['phone number is not valid']}/>
-                <TextValidator className={styles.input} value={formContent.title} id="outlined-basic" label="Title" variant="outlined" name="title" onChange={handleOnChange} validators={['required']} errorMessages={['this field is required']}/>
+                <TextValidator className={styles.input} value={formContent.title} id="outlined-basic" label="Title" variant="outlined" name="title" onChange={handleOnChange} validators={['required', 'minLengthTitle']} errorMessages={['this field is required', 'title is too short']}/>
                 <TextValidator className={styles.input} value={formContent.location  ? formContent.location : ''} id="outlined-basic" label="Location" variant="outlined" name="location" onChange={handleOnChange}/>
                 <TextValidator className={styles.input} value={formContent.price  ? formContent.price : ''} id="outlined-basic" label="Price" variant="outlined" name="price"onChange={handleOnChange} validators={['matchRegexp:^[0-9]']} errorMessages={['price is not valid']}/>
-                <TextValidator className={styles.input} value={formContent.text} id="outlined-multiline-static" label="Description" multiline rows={4} variant="outlined" name="text" onChange={handleOnChange} validators={['required']} errorMessages={['this field is required']}/>
+                <TextValidator className={styles.input} value={formContent.text} id="outlined-multiline-static" label="Description" multiline rows={4} variant="outlined" name="text" onChange={handleOnChange}validators={['required', 'minLengthText']} errorMessages={['this field is required', 'description is too short']}/>
                 <ImageUploader
                   withIcon={true}
                   buttonText='Choose image'
