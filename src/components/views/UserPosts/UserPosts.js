@@ -21,7 +21,7 @@ const Component = ({className, posts, loggedUser}) => {
         <h1>Your offers</h1>
       </div>
       <div className={styles.postsContainer}>
-        {loggedUser ? posts.map(post => <PostSummary key={post.id} {...post}/>) : <NotFound></NotFound>}
+        {loggedUser ? posts.map(post => <PostSummary key={post._id} {...post}/>) : <NotFound></NotFound>}
       </div>
     </div>
   );

@@ -2,8 +2,6 @@ import axios from 'axios';
 
 /* selectors */
 export const getPostById = ({post}) => post.data;
-export const getRequest = ({ photos }, name) => photos.requests[name];
-
 export const getPostByAuthor = ({posts}, id) => posts.data.filter(post => id === post.userId);
 
 /* action name creator */
@@ -19,7 +17,7 @@ const START_REQUEST = createActionName('START_REQUEST');
 const END_REQUEST = createActionName('END_REQUEST');
 const ERROR_REQUEST = createActionName('ERROR_REQUEST');
 
-const ADD_POST = createActionName('ADD_POST');
+export const ADD_POST = createActionName('ADD_POST');
 const UPDATE_POST = createActionName('UPDATE_POST');
 
 
@@ -100,7 +98,6 @@ export const addPutRequest = (post, id) => {
   }; 
 };
 
-
 /* reducers */
 export const reducer = (statePart = [], action = {}) => {
   switch (action.type) {
@@ -129,6 +126,14 @@ export const reducer = (statePart = [], action = {}) => {
         loading: {
           active: false,
           error: action.payload,
+        },
+      };
+    }
+    case UPDATE_POST: {
+      return {
+        data: action.payload.data,
+        loading: {
+          ...statePart.loading,
         },
       };
     }

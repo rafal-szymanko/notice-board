@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {ADD_POST} from './postRedux';
 
 /* selectors */
 export const getAllPublished = ({posts}) => posts.data;
@@ -69,6 +70,14 @@ export const reducer = (statePart = [], action = {}) => {
         loading: {
           active: false,
           error: action.payload,
+        },
+      };
+    }
+    case ADD_POST: {
+      return {
+        data: action.payload.data.reverse(),
+        loading: {
+          ...statePart.loading,
         },
       };
     }

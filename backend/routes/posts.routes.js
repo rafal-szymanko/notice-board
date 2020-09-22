@@ -87,7 +87,7 @@ router.put('/post/:id/edit', async (req, res,) => {
       try {
         const find = await Post.findOneAndUpdate({_id: req.params.id}, {...req.fields, photo: checkImage()}, {returnOriginal: false});
         console.log(find);
-        res.json(await Post.find());
+        res.json(await Post.findOne({_id: req.params.id}));
       }
       catch(err) {
         res.status(500).json({message: err});
