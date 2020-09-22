@@ -6,14 +6,14 @@ import {NotFound} from '../../views/NotFound/NotFound';
 import clsx from 'clsx';
 
 import { connect } from 'react-redux';
-import { getUserStatus, getPostByAuthor } from '../../../redux/postsRedux';
+import { getUserStatus, getPostByAuthor, fetchPublished} from '../../../redux/postsRedux';
 
 import styles from './UserPosts.module.scss';
 
 import {PostSummary} from '../../features/PostSummary/PostSummary';
 
 
-const Component = ({className, posts, userId}) => {
+const Component = ({className, posts, loggedUser}) => {
 
   return (
     <div className={clsx(className, styles.root)}>
@@ -21,7 +21,7 @@ const Component = ({className, posts, userId}) => {
         <h1>Your offers</h1>
       </div>
       <div className={styles.postsContainer}>
-        {userId ? posts.map(post => <PostSummary key={post.id} {...post}/>) : <NotFound></NotFound>}
+        {loggedUser ? posts.map(post => <PostSummary key={post.id} {...post}/>) : <NotFound></NotFound>}
       </div>
     </div>
   );
@@ -33,24 +33,25 @@ Component.propTypes = {
   className: PropTypes.string,
   getUserStatus: PropTypes.object,
   posts: PropTypes.array,
-  userId: PropTypes.number,
+  loggedUser: PropTypes.object,
 };
 
 const mapStateToProps = state => {
-  const userId = getUserStatus(state);
-  const posts = getPostByAuthor(state, userId);
+  const loggedUser = getUserStatus(state);
+  const posts = getPostByAuthor(state, loggedUser.mail);
   return {
-    userId,
+    loggedUser,
     posts,
   };
 };
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
+const mapDispatchToProps = dispatch => ({
+  fetchPublishedPosts: () => dispatch(fetchPublished()),
+});
 
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
-const Container = connect(mapStateToProps)(Component);
+
+
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   // Component as Header,

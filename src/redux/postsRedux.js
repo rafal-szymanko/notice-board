@@ -2,8 +2,7 @@ import axios from 'axios';
 
 /* selectors */
 export const getAllPublished = ({posts}) => posts.data;
-
-export const getPostByAuthor = ({posts}, id) => posts.data.filter(post => id === post.userId);
+export const getPostByAuthor = ({posts}, author) => posts.data.filter(post => post.author === author);
 
 export const getUserStatus = ({loggedUser}) => loggedUser;
 
