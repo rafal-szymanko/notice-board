@@ -72,8 +72,20 @@ router.put('/post/:id/edit', async (req, res,) => {
 
   if (title && validateEmail(author) && text) {
     if(title.length >= 10 && text.length >= 20) {
+
+      const checkImage = () => {
+        if(photo) {
+          return photo;
+        }
+        else if (!req.files.photo || !photo) {
+          return null;
+        } else if(req.files.photo) {
+          return file.path.split('/').slice(-1)[0];
+        }
+      };
+
       try {
-        const find = await Post.findOneAndUpdate({_id: req.params.id}, {...req.fields, photo: file ? file.path.split('/').slice(-1)[0] : photo}, {returnOriginal: false});
+        const find = await Post.findOneAndUpdate({_id: req.params.id}, {...req.fields, photo: checkImage()}, {returnOriginal: false});
         console.log(find);
         res.json(await Post.find());
       }

@@ -7,10 +7,12 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 
 import { connect } from 'react-redux';
-
-import styles from './PostAdd.module.scss';
 import { getUserStatus } from '../../../redux/postsRedux';
 import { addPostRequest} from '../../../redux/postRedux';
+
+import {useHistory} from 'react-router-dom';
+
+import styles from './PostAdd.module.scss';
 import { NotFound } from '../NotFound/NotFound';
 
 import { ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
@@ -32,7 +34,9 @@ const Component = ({className, loggedUserId, addPost}) => {
     photo: '',
     location: '',
   });
-  
+
+  const history = useHistory();
+
   const handleOnChange = (event) => {
     const { name, value } = event.target;
     setFormContent({
@@ -46,14 +50,16 @@ const Component = ({className, loggedUserId, addPost}) => {
       ...formContent,
       photo: files[0],
     });
-  }; 
+  };
+
+  const routeChange = () =>{ 
+    history.goBack();
+  };
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-
-    console.log(formContent);
-    
+    event.preventDefault();    
     const formData = new FormData();
+    console.log(formContent);
 
     for(let key of ['author', 'title', 'text', 'price', 'phone', 'location']) {
       formData.append(key, formContent[key]);
@@ -65,6 +71,8 @@ const Component = ({className, loggedUserId, addPost}) => {
     formData.append('status', 'published');
 
     addPost(formData);
+
+    routeChange();
 
     setFormContent({
       author: '',
@@ -104,7 +112,7 @@ const Component = ({className, loggedUserId, addPost}) => {
               <TextValidator className={styles.input} id="outlined-basic" label="Phone number" variant="outlined" name="phone" onChange={handleOnChange} value={formContent.phone} validators={['matchRegexp:^[0-9]']} errorMessages={['phone number is not valid']}/>
               <TextValidator className={styles.input} id="outlined-basic" label="Title (min 10 characters)" variant="outlined" name="title" onChange={handleOnChange} value={formContent.title} validators={['required', 'minLengthTitle']} errorMessages={['this field is required', 'title is too short']}/>
               <TextValidator className={styles.input} id="outlined-basic" label="Location" variant="outlined" name="location" onChange={handleOnChange}/>
-              <TextValidator className={styles.input} id="outlined-basic" label="Price" variant="outlined" name="price"onChange={handleOnChange} value={formContent.price} validators={['matchRegexp:^[0-9]']} errorMessages={['price is not valid']}/>
+              <TextValidator className={styles.input} id="outlined-basic" label="Price" variant="outlined" name="price" onChange={handleOnChange} value={formContent.price} validators={['matchRegexp:^[0-9]']} errorMessages={['price is not valid']}/>
               <TextValidator className={styles.input} id="outlined-multiline-static" label="Description (min 20 characters)" multiline rows={4} variant="outlined" name="text" onChange={handleOnChange} value={formContent.text} validators={['required', 'minLengthText']} errorMessages={['this field is required','description is too short']}/>
               <ImageUploader
                 withIcon={true}

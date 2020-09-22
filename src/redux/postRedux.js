@@ -58,7 +58,7 @@ export const addPostRequest = (post) => {
 
     try {
       let res = await axios.post(
-        `/api/post/add`,
+        `http://localhost:8000/api/post/add`,
         post,
         {
           headers: {
@@ -83,7 +83,7 @@ export const addPutRequest = (post, id) => {
 
     try {
       let res = await axios.put(
-        `/api/post/${id}/edit`,
+        `http://localhost:8000/api/post/${id}/edit`,
         post,
         {
           headers: {

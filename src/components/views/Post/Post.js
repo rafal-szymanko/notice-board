@@ -31,7 +31,6 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById, logged
 
   const {author, title, text, photo, phone, location, price, created, updated, _id} = getPublishedById;
 
-
   const renderIfAuthor = (postAuthor, loggedUser) => {
     if((postAuthor === loggedUser.mail) || loggedUser.admin === true) {
       return (
@@ -55,11 +54,7 @@ const Component = ({className, fetchPublishedPostsById, getPublishedById, logged
           <Paper className={styles.description}>
             <Card className={styles.card}>
               <CardActionArea>
-                <CardMedia
-                  className={styles.cardMedia}
-                  image={`http://localhost:8000/uploads/${photo}`}
-                  title={title}
-                />
+                {photo == null || photo ==='null' ? null : <CardMedia className={styles.cardMedia} image={`http://localhost:8000/uploads/${photo}`} title={title}/> }
                 <CardContent>
                   <Typography gutterBottom variant="h4" component="h2">
                     {title}

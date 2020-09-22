@@ -6,6 +6,7 @@
     display: flex;
     .description {
         width: 45vw;
+        height: 100%;
         .card {
             width: 100%;
             margin-top: 50px;
@@ -17,6 +18,7 @@
 
     .form {
         width: 45vw;
+        height: 80vh;
         display: flex;
         justify-content: center;
         align-items: center;

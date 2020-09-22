@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 import clsx from 'clsx';
-
+import {useHistory} from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import {getPostById, fetchPublishedById, addPutRequest} from '../../../redux/postRedux';
@@ -36,10 +36,14 @@ const Component = ({className, loggedUser, getPublishedById, fetchPublishedPosts
   const [formContent, setFormContent]= useState({});
 
   const {author, title, text, photo, price, created, updated} = getPublishedById;
-
+  const history = useHistory();
 
   useEffect(() => {(fetchPublishedPostsById());}, [fetchPublishedPostsById]);
   useEffect(() => {setFormContent(getPublishedById);}, [getPublishedById]);
+
+  const routeChange = () =>{ 
+    history.goBack();
+  };
 
   const handleOnChange = (event) => {
     const { name, value } = event.target;
@@ -47,6 +51,7 @@ const Component = ({className, loggedUser, getPublishedById, fetchPublishedPosts
       ...formContent,
       [name]: value,
     });
+
   };
 
   const handleOnChangeUpload = (files) => {
@@ -56,18 +61,21 @@ const Component = ({className, loggedUser, getPublishedById, fetchPublishedPosts
     });
   };
 
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const formData = new FormData();
 
-    for(let key of ['author', 'title', 'text', 'price', 'phone', 'location', 'created', 'status']) {
+    for(let key of ['author', 'title', 'text', 'phone', 'price', 'location', 'created', 'status']) {
       formData.append(key, formContent[key]);
     }
 
     formData.append('photo', formContent.photo);
     formData.append('updated', new Date());
+
     updatePost(formData);
+    routeChange();
   };
 
   const renderIfAuthorOrAdmin = () => {
@@ -78,11 +86,7 @@ const Component = ({className, loggedUser, getPublishedById, fetchPublishedPosts
             <Paper className={styles.description}>
               <Card className={styles.card}>
                 <CardActionArea>
-                  <CardMedia
-                    className={styles.cardMedia}
-                    image={`http://localhost:8000/uploads/${photo}`}
-                    title={title}
-                  />
+                  {photo == null || photo ==='null' ? null : <CardMedia className={styles.cardMedia} image={`http://localhost:8000/uploads/${photo}`} title={title}/> }
                   <CardContent>
                     <Typography gutterBottom variant="h4" component="h2">
                       {title}
